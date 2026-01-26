@@ -1,0 +1,248 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Чёрно-белая тема, с серыми оттенками */
+:root {
+  color-scheme: light dark;
+  --bg-color: #f5f5f5;
+  --bg-card: #ffffff;
+  --text-color: #111111;
+  --muted-text: #6b6b6b;
+  --accent: #111111;
+  --accent-soft: #e5e5e5;
+  --border-color: #dddddd;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #050505;
+    --bg-card: #111111;
+    --text-color: #f5f5f5;
+    --muted-text: #a3a3a3;
+    --accent: #f5f5f5;
+    --accent-soft: #262626;
+    --border-color: #262626;
+  }
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Шапка */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 1rem 0.5rem;
+}
+
+.app-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Вкладки */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+}
+
+.tab {
+  flex: 0 0 auto;
+  border: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted-text);
+  font-size: 0.85rem;
+}
+
+.tab-active {
+  background-color: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* Основной контейнер */
+.app-main {
+  padding: 1rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Карточка дня */
+.card {
+  background-color: var(--bg-card);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-color);
+}
+
+.section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Дата */
+.row-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.field-label {
+  font-size: 0.85rem;
+  color: var(--muted-text);
+}
+
+.date-input {
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 0.85rem;
+}
+
+.date-display {
+  font-size: 0.85rem;
+  color: var(--muted-text);
+}
+
+/* Подсказка */
+.hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted-text);
+}
+
+/* Строки успехов */
+.success-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.main-success-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--muted-text);
+  white-space: nowrap;
+}
+
+.success-input {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+/* Кнопка */
+.primary-button {
+  margin-top: 0.75rem;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--accent);
+  background-color: var(--accent);
+  color: var(--bg-card);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Мотивационный текст */
+.motivation-text {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted-text);
+}
+
+/* ===== ВИЗУАЛ ДЛЯ ДРЕВА (АККУРАТНОЕ ДОПОЛНЕНИЕ) ===== */
+
+/* Общие списки внутри history-list (для древa и витрин) */
+.history-list ul {
+  margin: 0;
+  padding-left: 0;
+}
+
+.history-list li {
+  list-style: none;
+}
+
+/* Заголовки маленьких секций (например, в режимах "все недели" и "по уровням") */
+.view-tree h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* Небольшой мягкий фон под секциями дерева (только в древе) */
+.view-tree .history-list > div {
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Лента дней в режиме "Все успехи" (древо) */
+.view-tree #tree-container > ul {
+  margin: 0;
+  padding-left: 0;
+}
+
+.view-tree #tree-container > ul > li {
+  line-height: 1.4;
+}
+/* Карточный вид секций в древе (режимы "Все недели" и "По уровням") */
+.view-tree .history-list > div {
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 0.75rem;
+}
+
+/* Строки внутри этих секций чуть компактнее и читабельнее */
+.view-tree .history-list > div li {
+  padding: 0.15rem 0;
+  font-size: 0.9rem;
+}
+
+/* Лента дней (Древо → Все успехи): дни чуть отделены друг от друга */
+.view-tree #tree-container > ul > li {
+  padding: 0.05rem 0;
+}
+
+/* Отделяем годы и месяцы чуть сильнее (они уже жирные из JS) */
+.view-tree #tree-container > ul > li[style*="font-weight: 700"] {
+  margin-top: 0.9rem;
+}
+
+.view-tree #tree-container > ul > li[style*="font-weight: 600"] {
+  margin-top: 0.5rem;
+}

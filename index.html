@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+
+  <title>Дневник успехов</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1f2933">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1 class="app-title">Дневник успехов</h1>
+    <nav class="tabs">
+      <button class="tab tab-active" data-view="day">День</button>
+      <button class="tab" data-view="week">Неделя</button>
+      <button class="tab" data-view="month">Месяц</button>
+      <button class="tab" data-view="quarter">Квартал</button>
+      <button class="tab" data-view="halfyear">Полугодие</button>
+      <button class="tab" data-view="year">Год</button>
+      <button class="tab" data-view="2years">2 года</button>
+      <button class="tab" data-view="5years">5 лет</button>
+      <button class="tab" data-view="7years">7 лет</button>
+      <button class="tab" data-view="10years">10 лет</button>
+      <li class="tab" data-view="tree">Древо</li>
+      <li class="tab" data-view="settings">⚙ Настройки</li>
+
+    </nav>
+  </header>
+
+  <main class="app-main">
+    <!-- ДЕНЬ -->
+    <section class="card view view-day">
+      <h2 class="section-title">День</h2>
+
+      <div class="row-date">
+        <label for="date-picker" class="field-label">Дата:</label>
+        <input type="date" id="date-picker" class="date-input">
+        <span id="date-display" class="date-display"></span>
+      </div>
+
+      <p class="hint">
+        Каждый день запиши до пяти успехов и выбери один главный, который хочешь запомнить.
+      </p>
+
+      <div class="success-row">
+        <label class="main-success-label">
+          <input type="radio" name="mainSuccess" value="1">
+          <span>Главный</span>
+        </label>
+        <input type="text" name="success1" placeholder="Успех 1" class="success-input">
+      </div>
+
+      <div class="success-row">
+        <label class="main-success-label">
+          <input type="radio" name="mainSuccess" value="2">
+          <span>Главный</span>
+        </label>
+        <input type="text" name="success2" placeholder="Успех 2" class="success-input">
+      </div>
+
+      <div class="success-row">
+        <label class="main-success-label">
+          <input type="radio" name="mainSuccess" value="3">
+          <span>Главный</span>
+        </label>
+        <input type="text" name="success3" placeholder="Успех 3" class="success-input">
+      </div>
+
+      <div class="success-row">
+        <label class="main-success-label">
+          <input type="radio" name="mainSuccess" value="4">
+          <span>Главный</span>
+        </label>
+        <input type="text" name="success4" placeholder="Успех 4" class="success-input">
+      </div>
+
+      <div class="success-row">
+        <label class="main-success-label">
+          <input type="radio" name="mainSuccess" value="5">
+          <span>Главный</span>
+        </label>
+        <input type="text" name="success5" placeholder="Успех 5" class="success-input">
+      </div>
+
+      <button class="primary-button" data-action="save-day">Сохранить день</button>
+
+      <p id="motivation-message" class="motivation-text"></p>
+
+      <div class="history-block">
+        <h3 class="history-title">История последних 7 дней</h3>
+        <ul id="history-list" class="history-list"></ul>
+      </div>
+    </section>
+
+    <!-- НЕДЕЛЯ -->
+    <section class="card view view-week" style="display:none;">
+      <h2 class="section-title">Неделя</h2>
+
+      <div class="row-date">
+        <label for="week-date" class="field-label">Дата внутри недели:</label>
+        <input type="date" id="week-date" class="date-input">
+        <span id="week-label" class="date-display"></span>
+        
+      </div>
+
+      <p class="hint">
+              <p id="week-days-count" class="hint"></p>
+
+        Выбери неделю (любой день внутри неё), посмотри главные успехи дней и выбери один «успех недели».
+      </p>
+
+      <ul id="week-days-list" class="history-list"></ul>
+
+      <button class="primary-button" data-action="save-week" id="save-week-button" disabled>
+        Сохранить успех недели
+      </button>
+
+      <p id="week-summary" class="motivation-text"></p>
+    </section>
+
+    <!-- МЕСЯЦ -->
+    <section class="card view view-month" style="display:none;">
+      <h2 class="section-title">Месяц</h2>
+
+      <div class="row-date">
+        <label for="month-input" class="field-label">Месяц:</label>
+        <input type="month" id="month-input" class="date-input">
+      </div>
+
+      <p class="hint">
+        Здесь будут показаны «успехи недели» для выбранного месяца. Можно будет выбрать один «успех месяца».
+      </p>
+            <p id="month-weeks-count" class="hint"></p>
+
+
+      <ul id="month-weeks-list" class="history-list"></ul>
+
+      <button class="primary-button" data-action="save-month" id="save-month-button" disabled>
+        Сохранить успех месяца
+      </button>
+
+      <p id="month-summary" class="motivation-text"></p>
+    </section>
+
+    <!-- КВАРТАЛ -->
+    <section class="card view view-quarter" style="display:none;">
+      <h2 class="section-title">Квартал</h2>
+
+      <div class="row-date">
+        <label for="quarter-year" class="field-label">Год:</label>
+        <input type="number" id="quarter-year" class="date-input" min="2000" max="2100">
+      </div>
+
+      <p class="hint">
+        Здесь будут показаны «успехи месяца» по кварталам. Можно будет выбрать «успех квартала».
+      </p>
+
+      <ul id="quarter-list" class="history-list"></ul>
+
+      <button class="primary-button" data-action="save-quarter" id="save-quarter-button" disabled>
+        Сохранить успех квартала
+      </button>
+
+      <p id="quarter-summary" class="motivation-text"></p>
+    </section>
+
+    <!-- ПОЛУГОДИЕ -->
+    <section class="card view view-halfyear" style="display:none;">
+      <h2 class="section-title">Полугодие</h2>
+
+      <div class="row-date">
+        <label for="halfyear-year" class="field-label">Год:</label>
+        <input type="number" id="halfyear-year" class="date-input" min="2000" max="2100">
+      </div>
+
+      <p class="hint">
+        Здесь будут показаны «успехи квартала» и выбор «успеха полугодия».
+      </p>
+
+      <ul id="halfyear-list" class="history-list"></ul>
+
+      <button class="primary-button" data-action="save-halfyear" id="save-halfyear-button" disabled>
+        Сохранить успех полугодия
+      </button>
+
+      <p id="halfyear-summary" class="motivation-text"></p>
+    </section>
+
+    <!-- ГОД -->
+    <section class="card view view-year" style="display:none;">
+      <h2 class="section-title">Год</h2>
+
+      <div class="row-date">
+        <label for="year-input" class="field-label">Год:</label>
+        <input type="number" id="year-input" class="date-input" min="2000" max="2100">
+      </div>
+
+      <p class="hint">
+        Здесь будут показаны «успехи месяца» за год и выбор «успеха года».
+      </p>
+
+      <ul id="year-months-list" class="history-list"></ul>
+
+      <button class="primary-button" data-action="save-year" id="save-year-button" disabled>
+        Сохранить успех года
+      </button>
+
+      <p id="year-summary" class="motivation-text"></p>
+    </section>
+
+    <!-- 2 ГОДА -->
+    <section class="card view view-2years" style="display:none;">
+      <h2 class="section-title">2 года</h2>
+
+      <p class="hint">
+        Здесь будут показаны «успехи года» и выбор главного успеха за 2 года.
+      </p>
+
+      <ul id="two-years-list" class="history-list"></ul>
+
+      <button class="primary-button" data-action="save-2years" id="save-2years-button" disabled>
+        Сохранить успех за 2 года
+      </button>
+
+      <p id="two-years-summary" class="motivation-text"></p>
+    </section>
+
+    <!-- 5 ЛЕТ -->
+    <section class="card view view-5years" style="display:none;">
+      <h2 class="section-title">5 лет</h2>
+
+      <p class="hint">
+        Здесь будут показаны «успехи года» и выбор главного успеха за 5 лет.
+      </p>
+
+      <ul id="five-years-list" class="history-list"></ul>
+
+      <button class="primary-button" data-action="save-5years" id="save-5years-button" disabled>
+        Сохранить успех за 5 лет
+      </button>
+
+      <p id="five-years-summary" class="motivation-text"></p>
+    </section>
+
+    <!-- 7 ЛЕТ -->
+    <section class="card view view-7years" style="display:none;">
+      <h2 class="section-title">7 лет</h2>
+
+      <p class="hint">
+        Здесь будут показаны «успехи года» и выбор главного успеха за 7 лет.
+      </p>
+
+      <ul id="seven-years-list" class="history-list"></ul>
+
+      <button class="primary-button" data-action="save-7years" id="save-7years-button" disabled>
+        Сохранить успех за 7 лет
+      </button>
+
+      <p id="seven-years-summary" class="motivation-text"></p>
+    </section>
+
+    <!-- 10 ЛЕТ -->
+    <section class="card view view-10years" style="display:none;">
+      <h2 class="section-title">10 лет</h2>
+
+      <p class="hint">
+        Здесь будут показаны «успехи года» и выбор главного успеха за 10 лет.
+      </p>
+
+      <ul id="ten-years-list" class="history-list"></ul>
+
+      <button class="primary-button" data-action="save-10years" id="save-10years-button" disabled>
+        Сохранить успех за 10 лет
+      </button>
+
+      <p id="ten-years-summary" class="motivation-text"></p>
+    </section>
+  </main>
+         <!-- ДРЕВО -->
+    <section class="card view view-tree" style="display:none;">
+      <h2 class="section-title">Древо успехов</h2>
+
+           <div class="row-date" style="gap:0.5rem; flex-wrap:wrap;">
+        <label>
+          <input type="radio" name="tree-mode" value="all" checked>
+          Все успехи
+        </label>
+        <label>
+          <input type="radio" name="tree-mode" value="all-weeks">
+          Все успехи недели
+        </label>
+        <label>
+          <input type="radio" name="tree-mode" value="levels">
+          По уровням (от недели до 10 лет)
+        </label>
+      </div>
+
+
+      <div id="tree-container" class="history-list"></div>
+    </section>
+
+
+    <section class="card view view-settings" style="display:none;">
+      <h2 class="section-title">Настройки</h2>
+
+      <p class="hint">
+        Здесь можно сохранить все данные в файл и потом восстановить их на этом или другом устройстве.
+      </p>
+
+      <div class="row-date" style="flex-direction:column; gap:0.5rem;">
+        <button class="primary-button" id="export-data-button">
+          Экспортировать данные в файл
+        </button>
+
+        <label class="primary-button" style="display:inline-flex; align-items:center; justify-content:center; cursor:pointer;">
+          Импортировать данные из файла
+          <input type="file" id="import-data-input" accept="application/json" style="display:none;">
+        </label>
+      </div>
+
+      <p id="settings-status" class="motivation-text"></p>
+    </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
