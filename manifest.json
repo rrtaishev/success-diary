@@ -1,13 +1,13 @@
 {
-  "name": "Дневник успехов",
+  "name": "Дневник успехов 10 лет",
   "short_name": "Успехи",
   "lang": "ru-RU",
-  "start_url": "/index.html",
-  "scope": "/",
+  "start_url": "/success-diary/index.html",
+  "scope": "/success-diary/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
-  "description": "Личный дневник успехов от дня до 10 лет.",
+  "description": "Личный дневник маленьких и больших успехов: от недели до 10 лет.",
   "icons": [
     {
       "src": "icons/icon-192.png",
