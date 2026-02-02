@@ -2,6 +2,7 @@
   "name": "Дневник успехов 10 лет",
   "short_name": "Успехи",
   "lang": "ru-RU",
+  "id": "/success-diary/",
   "start_url": "/success-diary/index.html",
   "scope": "/success-diary/",
   "display": "standalone",
@@ -9,15 +10,16 @@
   "theme_color": "#000000",
   "description": "Личный дневник маленьких и больших успехов: от недели до 10 лет.",
   "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  {
+    "src": "/success-diary/icons/icon-192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  },
+  {
+    "src": "/success-diary/icons/icon-512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }
+]
+
 }
