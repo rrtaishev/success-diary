@@ -176,7 +176,7 @@ body {
 
 /* Мотивационный текст */
 .motivation-text {
- color: #d32f2f !important;  /* ярко-красный */
+  color: #d32f2f !important;        /* ярко-красный */
   font-weight: 600;
   font-size: 1.1em;
   line-height: 1.4;
@@ -185,7 +185,9 @@ body {
   background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
   border-left: 4px solid #f44336;
   border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(244, 67, 54, 0.1);
 }
+
 
 /* ===== ВИЗУАЛ ДЛЯ ДРЕВА (АККУРАТНОЕ ДОПОЛНЕНИЕ) ===== */
 
