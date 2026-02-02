@@ -599,12 +599,16 @@ function getWeekEndDate(dateStr) {
   const daysInWeek = [];
   const current = new Date(monday);
   while (current <= sunday) {
-    const isoKey = current.toISOString().slice(0, 10);
-    if (allDays[isoKey]) {
-      daysInWeek.push(allDays[isoKey]);
-    }
-    current.setDate(current.getDate() + 1);
+  // YYYY-MM-DD без учёта часового пояса
+  const isoKey = current.getFullYear() + '-' + 
+                 String(current.getMonth() + 1).padStart(2, '0') + '-' + 
+                 String(current.getDate()).padStart(2, '0');
+  
+  if (allDays[isoKey]) {
+    daysInWeek.push(allDays[isoKey]);
   }
+  current.setDate(current.getDate() + 1);
+}
 
   if (weekDaysCount) {
     if (daysInWeek.length === 0) {
@@ -635,9 +639,11 @@ const weekKey = `${monday.toISOString().slice(0, 10)}`;
   // список дней для выбора
   let daysWithMainSuccess = 0;
   const currentDay = new Date(monday);
-  for (let i = 0; i < 7; i++) {
-    const isoKey = currentDay.toISOString().slice(0, 10);
-    const dayData = allDays[isoKey];
+for (let i = 0; i < 7; i++) {
+  const isoKey = currentDay.getFullYear() + '-' + 
+                 String(currentDay.getMonth() + 1).padStart(2, '0') + '-' + 
+                 String(currentDay.getDate()).padStart(2, '0');
+  const dayData = allDays[isoKey];
 
     const li = document.createElement('li');
     const label = document.createElement('label');
