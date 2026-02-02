@@ -218,8 +218,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // инициализация дня
-  const today = new Date();
-  const todayKey = today.toISOString().slice(0, 10);
+const today = new Date();
+const todayKey = today.getFullYear() + '-' + 
+                 String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                 String(today.getDate()).padStart(2, '0');
   if (dateInput) {
     dateInput.value = todayKey;
     updateDateDisplay(today);
@@ -596,10 +598,11 @@ function getWeekEndDate(dateStr) {
   const raw = localStorage.getItem('successDiaryDays');
   const allDays = raw ? JSON.parse(raw) : {};
 
-  const daysInWeek = [];
-  const current = new Date(monday);
-  while (current <= sunday) {
-  // YYYY-MM-DD без учёта часового пояса
+ // Цикл для подсчёта дней в неделе
+const daysInWeek = [];
+const current = new Date(monday);
+while (current <= sunday) {
+  // ЛОКАЛЬНАЯ дата без смещения пояса
   const isoKey = current.getFullYear() + '-' + 
                  String(current.getMonth() + 1).padStart(2, '0') + '-' + 
                  String(current.getDate()).padStart(2, '0');
@@ -639,10 +642,13 @@ const weekKey = `${monday.toISOString().slice(0, 10)}`;
   // список дней для выбора
   let daysWithMainSuccess = 0;
   const currentDay = new Date(monday);
+// Цикл для радиокнопок (ниже в той же функции)
 for (let i = 0; i < 7; i++) {
+  // ТОЖЕ ЛОКАЛЬНАЯ дата
   const isoKey = currentDay.getFullYear() + '-' + 
                  String(currentDay.getMonth() + 1).padStart(2, '0') + '-' + 
                  String(currentDay.getDate()).padStart(2, '0');
+                 
   const dayData = allDays[isoKey];
 
     const li = document.createElement('li');
