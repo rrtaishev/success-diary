@@ -126,6 +126,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+   // --- ВСПОМОГАТЕЛЬНАЯ: диапазон недели ПН–ВС ---
+  function getWeekRange(date = new Date()) {
+    const d = new Date(date);
+    const day = d.getDay(); // 0=вс, 1=пн, ..., 6=сб
+    const diffToMonday = day === 0 ? -6 : 1 - day;
+
+    const monday = new Date(d);
+    monday.setDate(d.getDate() + diffToMonday);
+    monday.setHours(0, 0, 0, 0);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23, 59, 59, 999);
+
+    return { monday, sunday };
+  }
+
   // --- День ---
   const saveButton = document.querySelector('button[data-action="save-day"]');
   if (!saveButton) {
@@ -497,31 +514,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Неделя: функции ---
 
-  function getWeekKey(dateStr) {
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return '';
-    const year = d.getFullYear();
-    const week = getWeekNumber(d);
-    return `${year}-W${String(week).padStart(2, '0')}`;
-  }
+function getWeekKey(dateStr) {
+  if (!dateStr) return null;
 
-  function getWeekStartDate(dateStr) {
-    const d = new Date(dateStr);
-    const day = d.getDay(); // 0 - вс, 1 - пн...
-    const diff = (day === 0 ? -6 : 1) - day; // понедельник — начало недели
-    const start = new Date(d);
-    start.setDate(d.getDate() + diff);
-    start.setHours(0, 0, 0, 0);
-    return start;
-  }
+  const start = getWeekStartDate(dateStr); // уже ПОНЕДЕЛЬНИК
+  if (isNaN(start.getTime())) return null;
 
-  function getWeekEndDate(dateStr) {
-    const start = getWeekStartDate(dateStr);
-    const end = new Date(start);
-    end.setDate(start.getDate() + 6);
-    end.setHours(23, 59, 59, 999);
-    return end;
-  }
+  const year = start.getFullYear();
+
+  // номер недели считаем относительно первого понедельника года
+  const jan4 = new Date(year, 0, 4);                // 4 января всегда в ISO‑неделе 1
+  const jan4Monday = getWeekStartDate(jan4.toISOString().slice(0, 10));
+
+  const diffMs = start - jan4Monday;
+  const week = 1 + Math.round(diffMs / (7 * 24 * 60 * 60 * 1000));
+
+  return `${year}-W${String(week).padStart(2, '0')}`;
+}
+
+
+function getWeekStartDate(dateStr) {
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return d;
+
+  const day = d.getDay();           // 0=вс, 1=пн, ..., 6=сб
+  const diffToMonday = day === 0 ? -6 : 1 - day;
+
+  d.setDate(d.getDate() + diffToMonday);
+  d.setHours(0, 0, 0, 0);
+  return d;                         // всегда понедельник
+}
+
+function getWeekEndDate(dateStr) {
+  const start = getWeekStartDate(dateStr);
+  if (isNaN(start.getTime())) return start;
+
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  end.setHours(23, 59, 59, 999);
+  return end;                       // всегда воскресенье (для себя)
+}
+
 
   function getWeekNumber(date) {
     const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
@@ -532,86 +565,118 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateWeekView(dateStr) {
-    if (!weekDaysList || !weekLabel) return;
+  if (!weekDaysList || !weekLabel) return;
 
-    weekDaysList.innerHTML = '';
-    weekSummary.textContent = '';
-    saveWeekButton.disabled = true;
+  weekDaysList.innerHTML = '';
+  weekSummary.textContent = '';
+  saveWeekButton.disabled = true;
 
-    const key = getWeekKey(dateStr);
-    if (!key) {
-      weekLabel.textContent = '';
-      const li = document.createElement('li');
-      li.textContent = 'Неверная дата.';
-      weekDaysList.appendChild(li);
-      return;
-    }
-
-    const start = getWeekStartDate(dateStr);
-    const end = getWeekEndDate(dateStr);
-    weekLabel.textContent = ` (${start.toLocaleDateString('ru-RU')} — ${end.toLocaleDateString('ru-RU')})`;
-
-    const raw = localStorage.getItem('successDiaryDays');
-    const allDays = raw ? JSON.parse(raw) : {};
-
-    const daysInWeek = [];
-    const current = new Date(start);
-    while (current <= end) {
-      const isoKey = current.toISOString().slice(0, 10);
-      if (allDays[isoKey]) {
-        daysInWeek.push(allDays[isoKey]);
-      }
-      current.setDate(current.getDate() + 1);
-    }
-        if (weekDaysCount) {
-      if (daysInWeek.length === 0) {
-        weekDaysCount.textContent = 'За эту неделю пока нет сохранённых дней.';
-      } else {
-        weekDaysCount.textContent = `Сохранено дней на этой неделе: ${daysInWeek.length}`;
-      }
-    }
-
-
-    if (daysInWeek.length === 0) {
-      const li = document.createElement('li');
-      li.textContent = 'За эту неделю пока нет сохранённых дней.';
-      weekDaysList.appendChild(li);
-      return;
-    }
-
-    saveWeekButton.disabled = false;
-
-    const rawWeeks = localStorage.getItem('successDiaryWeeks');
-    const allWeeks = rawWeeks ? JSON.parse(rawWeeks) : {};
-    const existingWeek = allWeeks[key];
-    if (existingWeek && existingWeek.mainSuccessText) {
-      weekSummary.textContent = `Ранее выбран успех недели: ${existingWeek.dayDate} — ${existingWeek.mainSuccessText}`;
-    }
-
-    daysInWeek.forEach(day => {
-      const li = document.createElement('li');
-      const main = day.successes.find(s => s.index === day.mainSuccessIndex);
-      const text = main && main.text ? main.text : '(главный успех не найден)';
-
-      const label = document.createElement('label');
-      label.style.display = 'flex';
-      label.style.alignItems = 'center';
-      label.style.gap = '0.5rem';
-
-      const radio = document.createElement('input');
-      radio.type = 'radio';
-      radio.name = 'weekMain';
-      radio.value = day.date;
-
-      const span = document.createElement('span');
-      span.textContent = `${day.displayDate}: ${text}`;
-
-      label.appendChild(radio);
-      label.appendChild(span);
-      li.appendChild(label);
-      weekDaysList.appendChild(li);
-    });
+  const baseDate = dateStr ? new Date(dateStr) : new Date();
+  if (isNaN(baseDate.getTime())) {
+    weekLabel.textContent = '';
+    const li = document.createElement('li');
+    li.textContent = 'Неверная дата.';
+    weekDaysList.appendChild(li);
+    return;
   }
+
+  // ЖЁСТКИЙ расчёт ПН–ВС для любой даты
+  const day = baseDate.getDay(); // 0=вс, 1=пн, ..., 6=сб
+  const diffToMonday = day === 0 ? -6 : 1 - day;
+  const monday = new Date(baseDate);
+  monday.setDate(baseDate.getDate() + diffToMonday);
+  monday.setHours(0, 0, 0, 0);
+  
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  sunday.setHours(23, 59, 59, 999);
+
+  weekLabel.textContent = ` (${monday.toLocaleDateString('ru-RU')} — ${sunday.toLocaleDateString('ru-RU')})`;
+
+  const raw = localStorage.getItem('successDiaryDays');
+  const allDays = raw ? JSON.parse(raw) : {};
+
+  const daysInWeek = [];
+  const current = new Date(monday);
+  while (current <= sunday) {
+    const isoKey = current.toISOString().slice(0, 10);
+    if (allDays[isoKey]) {
+      daysInWeek.push(allDays[isoKey]);
+    }
+    current.setDate(current.getDate() + 1);
+  }
+
+  if (weekDaysCount) {
+    if (daysInWeek.length === 0) {
+      weekDaysCount.textContent = 'За эту неделю пока нет сохранённых дней.';
+    } else {
+      weekDaysCount.textContent = `Сохранено дней на этой неделе: ${daysInWeek.length}`;
+    }
+  }
+
+  if (daysInWeek.length === 0) {
+    const li = document.createElement('li');
+    li.textContent = 'За эту неделю пока нет сохранённых дней.';
+    weekDaysList.appendChild(li);
+    return;
+  }
+
+  saveWeekButton.disabled = false;
+
+  // ключ недели — по понедельнику (Пн–Вс).
+const weekKey = `${monday.toISOString().slice(0, 10)}`;
+  const rawWeeks = localStorage.getItem('successDiaryWeeks');
+  const allWeeks = rawWeeks ? JSON.parse(rawWeeks) : {};
+  const existingWeek = allWeeks[weekKey];
+  if (existingWeek && existingWeek.mainSuccessText) {
+    weekSummary.textContent = `Ранее выбран успех недели: ${existingWeek.dayDate} — ${existingWeek.mainSuccessText}`;
+  }
+
+  // список дней для выбора
+  let daysWithMainSuccess = 0;
+  const currentDay = new Date(monday);
+  for (let i = 0; i < 7; i++) {
+    const isoKey = currentDay.toISOString().slice(0, 10);
+    const dayData = allDays[isoKey];
+
+    const li = document.createElement('li');
+    const label = document.createElement('label');
+    label.style.display = 'flex';
+    label.style.alignItems = 'center';
+    label.style.gap = '0.5rem';
+
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'weekMain';
+    radio.value = isoKey;
+
+    const span = document.createElement('span');
+    span.textContent = `${currentDay.toLocaleDateString('ru-RU')}: `;
+
+    if (dayData && dayData.successes && dayData.mainSuccessIndex) {
+      const main = dayData.successes.find(s => s.index === dayData.mainSuccessIndex);
+      if (main && main.text) {
+        span.textContent += main.text;
+        radio.disabled = false;
+        daysWithMainSuccess++;
+      } else {
+        span.textContent += '(нет текста главного успеха)';
+        radio.disabled = true;
+      }
+    } else {
+      span.textContent += '(нет данных)';
+      radio.disabled = true;
+    }
+
+    label.appendChild(radio);
+    label.appendChild(span);
+    li.appendChild(label);
+    weekDaysList.appendChild(li);
+
+    currentDay.setDate(currentDay.getDate() + 1);
+  }
+}
+
 
   // --- Месяц: функции ---
 
@@ -2071,14 +2136,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
     // ===== PWA: регистрация service worker =====
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./service-worker.js')
-        .catch((err) => {
-          console.error('ServiceWorker registration failed:', err);
-        });
-    });
-  }
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/success-diary/service-worker.js');
+  });
+}
 
 
 });
